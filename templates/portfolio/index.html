@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ personal_info.name }} | {{ personal_info.title }}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;600&family=Syne:wght@600;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Intro Overlay -->
+    <div id="intro-overlay"></div>
+
+    <!-- Background Particle Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="#hero" class="logo">{{ personal_info.name|slice:":1" }}<span class="highlight">.</span></a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact" class="btn-primary-outline">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <p class="greeting">Hi, I am</p>
+            <h1 class="name" id="hero-name">{{ personal_info.name }}</h1>
+            <h2 class="title typewriter-container">
+                <span id="typewriter" data-text="{{ personal_info.title }}"></span><span class="cursor">|</span>
+            </h2>
+            <p class="hero-bio">{{ personal_info.bio|truncatewords:20 }}</p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn-primary">View Work</a>
+                <a href="#contact" class="btn-secondary">Get in Touch</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+        <!-- 3D Hero Mesh Canvas -->
+        <canvas id="hero-canvas"></canvas>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about section-padding scroll-reveal">
+        <h2 class="section-title">About <span class="highlight">Me</span></h2>
+        <div class="about-grid">
+            <div class="about-text">
+                <p>{{ personal_info.bio }}</p>
+                <div class="contact-details">
+                    <div class="detail-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ personal_info.email }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ personal_info.phone }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-location-dot"></i>
+                        <span>{{ personal_info.location }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="aesthetic-box">
+                    <div class="code-snippet">
+                        <pre><code><span class="keyword">class</span> <span class="classname">Developer</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="self">self</span>):
+        <span class="self">self</span>.name = <span class="string">"{{ personal_info.name }}"</span>
+        <span class="self">self</span>.role = <span class="string">"{{ personal_info.title }}"</span>
+        <span class="self">self</span>.driven = <span class="keyword">True</span>
+        
+    <span class="keyword">def</span> <span class="function">build</span>(<span class="self">self</span>):
+        <span class="keyword">return</span> <span class="string">"Scalable Web Apps"</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects section-padding scroll-reveal">
+        <h2 class="section-title">Selected <span class="highlight">Projects</span></h2>
+        <div class="project-grid">
+            {% for project in projects %}
+            <div class="project-card">
+                <div class="project-content">
+                    <div class="project-header">
+                        <span class="project-date">{{ project.date }}</span>
+                        <div class="project-links">
+                            {% if project.url %}
+                            <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i></a>
+                            {% else %}
+                            <i class="fas fa-external-link-alt"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <h3 class="project-title">{{ project.title }}</h3>
+                    <p class="project-description">{{ project.description }}</p>
+                    <ul class="project-stack">
+                        {% for tech in project.stack %}
+                        <li>{{ tech }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills section-padding scroll-reveal">
+        <h2 class="section-title">My <span class="highlight">Skills</span></h2>
+        <div class="skills-container">
+            {% for skill in skills %}
+            <div class="skill-item">
+                <div class="skill-info">
+                    <span class="skill-name">{{ skill.name }}</span>
+                    <span class="skill-percent">{{ skill.level }}%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" data-level="{{ skill.level }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Experience Section (Tabs) -->
+    <section id="experience" class="experience section-padding scroll-reveal">
+        <h2 class="section-title">My <span class="highlight">Journey</span></h2>
+        
+        <div class="tabs-container">
+            <div class="tab-controls">
+                <button class="tab-btn active" data-target="internships">Internships</button>
+                <button class="tab-btn" data-target="education">Education</button>
+            </div>
+            
+            <div class="tab-content active" id="internships">
+                <div class="timeline">
+                    {% for internship in internships %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>{{ internship.role }}</h3>
+                            <h4 class="highlight">{{ internship.company }}</h4>
+                            <p>{{ internship.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="tab-content" id="education">
+                <div class="timeline">
+                    {% for ed in education %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>{{ ed.degree }}</h3>
+                            <h4 class="highlight">{{ ed.institution }}</h4>
+                            <span class="timeline-date">{{ ed.period }}</span>
+                            {% if ed.gpa %}<p>GPA: {{ ed.gpa }}</p>{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section-padding scroll-reveal">
+        <canvas id="contact-canvas"></canvas>
+        <div class="contact-box">
+            <h2 class="section-title">Let's <span class="highlight">Connect</span></h2>
+            <p>I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+            
+            <a href="mailto:{{ personal_info.email }}" class="btn-primary massive-btn">Say Hello</a>
+            
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/mohan-raj-09b62826b/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://wa.me/917550208154" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Designed & Built by <span class="highlight">{{ personal_info.name }}</span></p>
+        <p class="copyright">&copy; <span id="year"></span> All rights reserved.</p>
+    </footer>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
